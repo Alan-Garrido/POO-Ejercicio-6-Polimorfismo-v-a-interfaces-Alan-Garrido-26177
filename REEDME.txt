@@ -1,0 +1,62 @@
+EJERCICIO 6 - POLIMORFISMO VIA INTERFACES
+
+Prototipo de consola en Java basado en el analisis y el UML proporcionados.
+Requiere JDK 8 o posterior. No necesita librerias externas ni acceso a Internet.
+
+COMPILAR Y EJECUTAR (PowerShell, desde esta carpeta)
+New-Item -ItemType Directory -Force bin
+javac -encoding UTF-8 -d bin src/*.java
+java -cp bin Principal
+
+PRUEBAS AUTOMATICAS
+javac -encoding UTF-8 -d bin src/*.java tests/*.java
+java -ea -cp bin PruebasEjercicio6
+Las pruebas terminan sin mensajes si pasan. Una falla produce AssertionError.
+El parametro -ea activa las comprobaciones de las pruebas.
+
+MENU
+1: listar activas; 2: buscar configuracion; 3: ordenar por latencia;
+4: consultar estado; 5: cobrar; 6: reintegrar; 7: generar XML; 0: salir.
+Los identificadores aceptan minusculas y espacios exteriores.
+Los montos usan punto decimal, por ejemplo 100.50.
+
+DATOS INICIALES
+P01 Tarjeta A (120 ms), P02 Tarjeta B (180 ms),
+P03 Transferencia A (240 ms), P04 Billetera A (90 ms),
+C01 Rastreo A (70 ms), C02 Rastreo B (300 ms, desconectada),
+L01 Envios A (200 ms), L02 Ultima milla A (160 ms),
+F01 Certificador A (150 ms), F02 Certificador B (210 ms).
+Todas estan activas. Los endpoints son https://demo.test/api/ mas el ID
+en minusculas; son direcciones ilustrativas y no se accede a ellas.
+
+CASOS PARA DEMOSTRAR
+- Cobrar 100 con P01: exito y registro del evento.
+- Reintegrar 100 con L01: OMITIDO; el menu continua funcionando.
+- Consultar C02: informa que no esta disponible.
+- Generar con L01 o F01 y referencia PEDIDO-001: guia o factura XML simulada.
+- Buscar P01 despues de cobrar: muestra el ultimo evento.
+- Ordenar: C01, P04, P01, F01, L02, P02, L01, F02, P03, C02.
+- Probar opciones no numericas y montos negativos, NaN o Infinity.
+
+DISENO Y TEMAS APLICADOS
+Modelo: IntegracionAPI, PagoAPI, ConsultaAPI, LogisticaAPI, FelAPI,
+CatalogoAPI, MotorCheckout y los contratos Auditable, Transaccional,
+Documentable. Vista: Principal. Coordinacion: Controlador.
+Se conservan los atributos, firmas y relaciones del UML.
+Se aplican encapsulacion, abstraccion, herencia, interfaces, polimorfismo,
+sobrecarga de procesar, ArrayList generico, Comparable, Collections.sort,
+equals/hashCode, toString, condiciones, ciclos y manejo de excepciones
+para entradas numericas y fin de entrada. No se agregan temas sin necesidad.
+Solo CatalogoAPI guarda integraciones en una lista; no hay listas por tipo
+ni una lista adicional de auditoria. Se conserva unicamente el ultimo evento.
+Principal contiene toda la lectura y la unica llamada a System.out.println.
+No se utilizan ciclos de condicion constante ni instrucciones break.
+
+LIMITES DEL PROTOTIPO
+Las conexiones, latencias, cobros, reintegros y documentos son simulados.
+No hay llamadas de red, persistencia, certificacion FEL ni saldo contable.
+Una operacion financiera acepta cualquier monto finito positivo si el
+servicio esta activo y conectado, conforme al analisis proporcionado.
+No se agrega interfaz grafica porque el diseno suministrado es de consola.
+Para incorporar otro proveedor se registra un objeto compatible; no es
+necesario modificar MotorCheckout. Las pruebas demuestran este caso.
